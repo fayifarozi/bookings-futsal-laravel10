@@ -1,6 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\FieldController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ScheduleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,11 +18,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
-
-
 Route::prefix('/booking')->group(function () {
     Route::get('/', [BookingController::class, 'bookingField'])->name('BookingField');
     Route::get('/{path}', [BookingController::class, 'bookingTime'])->name('BookingTime');

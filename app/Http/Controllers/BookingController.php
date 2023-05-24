@@ -2,9 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Booking;
+use App\Models\DetailBooking;
+use App\Models\FutsalField;
+use App\Models\Hour;
+use App\Models\Payment;
+
+use Midtrans\Snap;
+use Carbon\Carbon;
+use Carbon\CarbonInterval;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use SebastianBergmann\LinesOfCode\Counter;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 
 class BookingController extends Controller
 {
@@ -14,5 +24,109 @@ class BookingController extends Controller
         return view('master.bookings.list', [
             'data' => $data
         ]);
+    }
+    public function bookingField(){
+        $futsalFields = FutsalField::getFieldActive();
+        return view('formBooking/fieldForm',[
+           'futsalFields' => $futsalFields,
+        ]);
+    }
+    
+    public function bookingTime($path)
+    {
+        // dd($path);
+        $futsalFields = FutsalField::where('path', $path)->firstOrFail();
+        $field_id = $futsalFields->field_id;
+        // dd($field_id);
+        $times = Hour::getOpenTime();
+        return view('formBooking/timeForm', [
+            'times' => $times,
+            'futsalFields' => $futsalFields
+        ]);
+    }
+
+    public function timeRequest(Request $request)
+    {
+        // dd($request);
+        $date = $request['tanggal'];
+        $field = $request['lapangan'];
+        $availableBooked = [];
+
+        if ($date) {
+            $timeBooked = DetailBooking::where('date_booked', $date)
+                ->where('field_id', $field)
+                ->select('start_time', 'end_time')
+                ->get();
+
+            //ambil waktu yang tersedia pada hari itu
+            $timeOpen = Hour::getOpenTime();
+
+            if ($timeBooked->isNotEmpty()) {
+                //ambil range waktu antara start_time dan end_time (08:00:00,09:00:00,dst)
+                //masukkan ke array waktu2 yang telah ter-booked
+                $arrayBooked = [];
+                foreach ($timeBooked as $time) {
+                    $start_time = Carbon::parse($time->start_time);
+                    $end_time = Carbon::parse($time->end_time);
+
+                    while ($start_time < $end_time) {
+                        $arrayBooked[] = $start_time->format('H:i:s');
+                        $start_time->addHour();
+                    }
+                }
+                //membandingkan arrayBooked dengan timeOpen jika tidak sama dengan yang dibooked masukan data timeOpen ke avalible booked 
+                $availableBooked = array_values(array_diff($timeOpen, $arrayBooked));
+            } else {
+                $availableBooked = $timeOpen;
+            }
+            return response()->json(['data' => $availableBooked]);
+        }
+    }
+
+    public function store(Request $request)
+    {
+        $bookingData = $request->validate([
+            'name' => 'required|max:255',
+            'email' => 'required',
+            'phone' => 'required'
+        ]);
+        $times = $request['time'];
+        $pricePerHour = $request['fieldPrice'];
+        $start_first = Carbon::parse($times[0]);
+        $end_time = Carbon::parse($times[sizeof($times)-1])->addHour();
+    
+        $countTime = count($times);
+        $amount = count($times) * $pricePerHour;
+    
+        $bookingData['tanggal'] = Carbon::now('Asia/Phnom_Penh')->format('Y-m-d');
+        $bookingData['status'] = Booking::PROCESS;
+        $bookingData['amount'] = $amount;
+        $bookingData['order_code'] = Booking::generateCode();
+        
+        $booking = Booking::create($bookingData);
+        
+        $detailParm = [
+            'booking_id' => $booking->booking_id,
+            'field_id' => $request['field_id'],
+            'date_booked' => $request['tanggal'],
+            'start_time' => $start_first->format('H:i:s'),
+            'duration' => $countTime,
+            'end_time' => $end_time->format('H:i:s'),
+            'price' => $pricePerHour,
+            'amount' => $amount
+        ];
+
+        $detailBooking = DetailBooking::create($detailParm);
+
+        self::_generatePaymentToken($booking, $detailBooking);
+
+        if ($booking) {
+            $toastMessage = [
+                'type' => 'success',
+                'message' => 'Thank you. Your booking has been received!'
+            ];
+            Session::flash('toast', $toastMessage);
+            return redirect(route('checkBooking', ['booking' => $booking->booking_id]));
+		}
     }
 }
