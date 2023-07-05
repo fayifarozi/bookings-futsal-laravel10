@@ -27,27 +27,52 @@
                             <span>Dashboard</span>
                         </a>
                     </li>
+                    
+                    @if(Session::get('level') == 'admin')
                     <li class="sidebar-item">
-                        <a href="{{ route('bookings')}}" class='sidebar-link'>
-                            <i class="bi bi-grid-fill"></i>
-                            <span>Bookings</span>
+                        <a href="{{ route('admin')}}" class='sidebar-link'>
+                            <i class="bi bi-people"></i>
+                            <span>Admin</span>
                         </a>
                     </li>
+                    @endif
+
+                    <!-- <li class="sidebar-item has-sub">
+                        <a href="#" class='sidebar-link'>
+                            <i class="bi bi-house"></i>
+                            <span>Home Page</span>
+                        </a>
+                        <ul class="submenu ">
+                            <li class="submenu-item ">
+                                <a href="">List Gambar</a>
+                            </li>
+                            <li class="submenu-item ">
+                                <a href="">Header</a>
+                            </li>
+                        </ul>
+                    </li> -->
+
                     <li class="sidebar-item">
                         <a href="{{ route('fields')}}" class='sidebar-link'>
-                            <i class="bi bi-grid-fill"></i>
+                            <i class="bi bi-tags"></i>
                             <span>Futsal Field</span>
                         </a>
                     </li>
                     <li class="sidebar-item">
                         <a href="{{ route('schedules')}}" class='sidebar-link'>
-                            <i class="bi bi-grid-fill"></i>
+                            <i class="bi bi-clock-history"></i>
                             <span>Schedule</span>
                         </a>
                     </li>
                     <li class="sidebar-item">
+                        <a href="{{ route('bookings')}}" class='sidebar-link'>
+                            <i class="bi bi-card-checklist"></i>
+                            <span>Bookings</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
                         <a href="{{ route('payments')}}" class='sidebar-link'>
-                            <i class="bi bi-grid-fill"></i>
+                            <i class="bi bi-app-indicator"></i>
                             <span>Payment Notification</span>
                         </a>
                     </li>

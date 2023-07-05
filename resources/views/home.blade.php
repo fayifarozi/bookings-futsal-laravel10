@@ -12,7 +12,7 @@
         <h1>Futsal Fabell</h1>
         <h2>We are team of talented designers making websites with Bootstrap</h2>
         <div class="d-flex justify-content-center justify-content-lg-start">
-          <a href="#lapangan" class="btn-get-started scrollto">Order Now</a>
+          <a href="{{ route('BookingField')}}" class="btn-get-started scrollto">Order Now</a>
         </div>
       </div>
     </div>
@@ -130,7 +130,7 @@
   </section><!-- End Services Section -->
 
   <!-- ======= Pricing Section ======= -->
-  <section id="pricing" class="pricing section-bg">
+  <!-- <section id="pricing" class="pricing section-bg">
     <div class="container" data-aos="fade-up">
 
       <div class="section-title">
@@ -159,7 +159,7 @@
         </div>
       </div>
     </div>
-  </section><!-- End Pricing Section -->
+  </section>End Pricing Section -->
 
   <!-- ======= Contact Section ======= -->
   <section id="contact" class="contact">
