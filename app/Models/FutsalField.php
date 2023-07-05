@@ -36,4 +36,5 @@ class FutsalField extends Model
     {
         return $this->hasMany(DetailBooking::class, 'field_id', 'field_id');
     }
+
 }

@@ -48,9 +48,11 @@ class Booking extends Model
         }
         return $orderCode;
     }
-    
+
+
     public function details()
     {
         return $this->hasOne(DetailBooking::class, 'booking_id', 'booking_id');
     }
+
 }
