@@ -129,4 +129,44 @@ class BookingController extends Controller
             return redirect(route('checkBooking', ['booking' => $booking->booking_id]));
 		}
     }
+    
+    private function _generatePaymentToken($booking, $detailBooking)
+	{
+        $this->initPaymentGateway();
+		$customerDetails = [
+            'name' => $booking->name,
+            'email' => $booking->email,
+			'phone' => $booking->phone,
+		];
+
+		$params = [
+            'enable_payments' => Payment::PAYMENT_CHANNELS,
+			'transaction_details' => [
+                'order_id' => $booking->order_code,
+				'gross_amount' => $booking->amount,
+			],            
+            
+			'customer_details' => $customerDetails,
+			'expiry' => [
+                'start_time' => date('Y-m-d H:i:s T'),
+				'unit' => Payment::EXPIRY_UNIT,
+				'duration' => Payment::EXPIRY_DURATION,
+			],
+		];
+        
+		$snap = Snap::createTransaction($params);
+
+		if ($snap->token) {
+            $detailBooking->payment_status = DetailBooking::UNPAID;
+            $detailBooking->payment_token = $snap->token;
+			$detailBooking->payment_url = $snap->redirect_url;
+			$detailBooking->save();
+		}
+	}
+
+    public function detailBooking(Booking $booking){
+        return view('formBooking.checkout', [
+            'booking' => $booking
+        ]);
+    }
 }
