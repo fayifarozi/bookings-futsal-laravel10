@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FutsalField;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class FieldController extends Controller
 {
@@ -22,7 +25,6 @@ class FieldController extends Controller
     public function updateStatus(Request $request)
     {
         $data = FutsalField::findOrFail($request->field_id);
-        
         
         if ($data !== null){
             $status = ($request->status === 'active') ? 'active' : 'deactive';

@@ -46,15 +46,15 @@
                                             </div>
                                             <div class="card-footer d-flex justify-content-center gap-1" >
                                                 <a href="{{ route('fields.edit', ['path' => $row->path]) }}" class="btn btn-primary">Edit</a>
-                                                <form method="POST" action="{{ route('fields.updateStatus')}}" id="updateStatus">
+                                                <form method="POST" action="{{ route('fields.updateStatus')}}" id="updateStatus-{{ $row->field_id}}">
                                                     @csrf
                                                     <input type="hidden" name="field_id" value="{{ $row->field_id}}">
                                                     @if( $row->status == 'active')
                                                     <input type="hidden" name="status" value="deactive">
-                                                    <button type="button" class="btn btn-danger" onclick="updateStatus()">Deactive</button>
+                                                    <button type="button" class="btn btn-danger" onclick="updateStatus({{$row->field_id}})">Deactive</button>
                                                     @else
                                                     <input type="hidden" name="status" value="active">
-                                                    <button type="button" class="btn btn-danger" onclick="updateStatus()">Active</button>
+                                                    <button type="button" class="btn btn-danger" onclick="updateStatus({{$row->field_id}})">Active</button>
                                                     @endif
                                                 </form>
                                             </div>
@@ -71,17 +71,18 @@
 @endsection
 @section('script')
 <script>
-    function updateStatus() {
+    function updateStatus(fieldId) {
         Swal.fire({
             title: "Confirmation",
-            text: "Are you sure you want to change status ?",
+            text: "Are you sure you want to change the status?",
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Yes",
             cancelButtonText: "No"
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById("updateStatus").submit();
+                const formId = "updateStatus-" + fieldId;
+                document.getElementById(formId).submit();
             }
         });
     }

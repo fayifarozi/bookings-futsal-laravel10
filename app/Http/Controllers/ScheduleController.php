@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Hour;
+
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
+use Illuminate\Auth\Events\Validated;
+use Carbon\Carbon;
 
 class ScheduleController extends Controller
 {
