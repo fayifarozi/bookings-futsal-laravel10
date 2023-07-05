@@ -9,7 +9,6 @@ class Payment extends Model
 {
     use HasFactory;
     protected $primaryKey = 'payment_id';
-    protected $collection = 'payment';
     protected $fillable = [
         'order_code',
         'number',
@@ -92,5 +91,5 @@ class Payment extends Model
             return self::generateCode();
         }
         return $number;
-    }    
+    }
 }

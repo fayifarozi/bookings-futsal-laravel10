@@ -18,13 +18,13 @@ use Symfony\Component\Console\Logger\ConsoleLogger;
 
 class BookingController extends Controller
 {
-    public function getAllBooking()
-    {
+    public function getAllBooking(){
         $data = Booking::all();
         return view('master.bookings.list', [
             'data' => $data
         ]);
     }
+
     public function bookingField(){
         $futsalFields = FutsalField::getFieldActive();
         return view('formBooking/fieldForm',[
@@ -83,18 +83,44 @@ class BookingController extends Controller
         }
     }
 
+    public function detailBooking(Booking $booking)
+    {
+        return view('formBooking.checkout', [
+            'booking' => $booking
+        ]);
+    }
+
+    public function detailBookingMaster(Booking $booking)
+    {
+        return view('master.bookings.detail', [
+            'booking' => $booking
+        ]);
+    }
+
     public function store(Request $request)
     {
+        // dd($request->all());
         $bookingData = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required',
-            'phone' => 'required'
+            'phone' => 'required',
+            'captcha' => 'required|captcha'
         ]);
         $times = $request['time'];
         $pricePerHour = $request['fieldPrice'];
         $start_first = Carbon::parse($times[0]);
         $end_time = Carbon::parse($times[sizeof($times)-1])->addHour();
-    
+        
+        // $intervals = [];
+        // foreach ($times as $time) {
+        //     $start_time = Carbon::parse($time);
+        //     $end_time = Carbon::parse($time);
+        //     while ($start_time <= $end_time) {
+        //         $intervals[] = $start_time->format('H:i:s');
+        //         $start_time->addHour();
+        //     }
+        // }
+
         $countTime = count($times);
         $amount = count($times) * $pricePerHour;
     
@@ -104,6 +130,8 @@ class BookingController extends Controller
         $bookingData['order_code'] = Booking::generateCode();
         
         $booking = Booking::create($bookingData);
+        
+        // $bookingId = Booking::getIdLatest();
         
         $detailParm = [
             'booking_id' => $booking->booking_id,
@@ -116,6 +144,7 @@ class BookingController extends Controller
             'amount' => $amount
         ];
 
+        // dd($booking, $detailParm);
         $detailBooking = DetailBooking::create($detailParm);
 
         self::_generatePaymentToken($booking, $detailBooking);
@@ -129,7 +158,12 @@ class BookingController extends Controller
             return redirect(route('checkBooking', ['booking' => $booking->booking_id]));
 		}
     }
-    
+
+    public function reloadCaptcha()
+    {
+        return response()->json(['captcha'=> captcha_img()]);
+    }
+
     private function _generatePaymentToken($booking, $detailBooking)
 	{
         $this->initPaymentGateway();
@@ -164,9 +198,5 @@ class BookingController extends Controller
 		}
 	}
 
-    public function detailBooking(Booking $booking){
-        return view('formBooking.checkout', [
-            'booking' => $booking
-        ]);
-    }
+    
 }

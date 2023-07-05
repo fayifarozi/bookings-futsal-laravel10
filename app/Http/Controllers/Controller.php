@@ -10,6 +10,12 @@ use App\Services\Midtrans\Midtrans as PaymentGateway;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
+    
+	/**
+	 * Initiate payment gateway request object
+	 *
+	 * @return void
+	 */
     protected function initPaymentGateway()
 	{
         $paymentgateway = new PaymentGateway();
