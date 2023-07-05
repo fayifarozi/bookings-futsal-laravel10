@@ -15,15 +15,13 @@
                     <div class="card border-0">
                         <div class="card-content">
                             @if ($futsalFields->image !== null)
-                                <img src="{{ asset('images/' . $futsalFields->image) }}" class="card-img-top" alt="...">
+                                <img src="{{ asset('images/' . $futsalFields->image) }}" class="card-img" alt="...">
                             @else
-                                <img src="/assets/img/cta-bg.jpg" class="card-img-top" alt="...">
+                                <img src="/assets/img/cta-bg.jpg" class="card-img" alt="...">
                             @endif
-                            <div class="row">
-                                <div class="col-12">
-                                    <h1>Lorem ipsum dolor sit.</h1>
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni, quod! Sed, repudiandae! Perferendis, numquam odit odio harum officiis illum perspiciatis doloribus sapiente, rerum fugit cupiditate consequatur adipisci autem deleniti ad?</p>
-                                </div>
+                            <div class="card-body">
+                                <h1>{{ $futsalFields->field_name }}</h1>
+                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni, quod! Sed, repudiandae! Perferendis, numquam odit odio harum officiis illum perspiciatis doloribus sapiente, rerum fugit cupiditate consequatur adipisci autem deleniti ad?</p>
                             </div>
                         </div>
                     </div>
@@ -35,7 +33,7 @@
                             <input type="text" class="form-control" id="name" name="name">
                         </div>
                         <div class="col-6 mb-3">
-                            <label for="phone" class="form-label">Phone</label>
+                            <label for="phone" class="form-label">Nomer WA</label>
                             <input type="text" class="form-control" id="phone" name="phone">
                         </div>
 
@@ -45,29 +43,42 @@
                         </div>
                         <div class="col-12 mb-3">
                             <label for="tanggal" class="form-label">Tanggal</label>
-                            <input type="date" class="form-control" id="tanggal" name="tanggal">
-                            <div id=" tangalHelp" class="form-text">Note : Please Select the Futsal field before entering the date.
+                            <input type="text" onfocus="(this.type = 'date')" class="form-control" id="tanggal" name="tanggal">
+                            <div id=" tangalHelp" class="form-text">Catatan : Harap pilih tanggal terlebih dahulu sebelum memilih waktu.
                             </div>
                         </div>
+                        <div class="col-6 mb-3">
+                            <div class="captcha">
+                                <span>{!! captcha_img() !!}</span>
+                                <button type="button" class="btn btn-danger" class="reload" id="reload">
+                                    &#x21bb;
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="col-6 mb-3">
+                            <div class="form-group mb-4">
+                                <input id="captcha" type="text" class="form-control" placeholder="Enter Captcha" name="captcha">
+                            </div>
+                        </div>
+
                         <div class=" col-12 mb-3">
                             <div class="row row-col-auto">
                                 <label class="form-label">Jam Booking</label>
-                                @foreach($times as $time)
-                                <div class="col-2 p-2">
-                                    <div class="card shadow">
-                                        <div class="card-body">
-                                            <input class="form-check-input" type="checkbox" value="{{ $time }}" disabled id="time-{{ $loop->iteration }}" name="time[]">
-                                            <label class="form-check-label" for="time-{{ $loop->iteration }}">
+                                @foreach($times as $index => $time)
+                                <div class="col-3 p-2">
+                                    <div class="card card-time disabled">
+                                        <label class="form-check-label" for="time-{{ $loop->iteration }}">
+                                        <input class="form-check-input" type="checkbox" value="{{ $time }}" disabled id="time-{{ $loop->iteration }}" name="time[]">
+                                            <div class="card-body text-center">
                                                 {{ $time }}
-                                            </label>
-                                        </div>
+                                            </div>
+                                        </label>
                                     </div>
                                 </div>
                                 @endforeach
                             </div>
                         </div>
-                    <!-- <div class="col-12 d-flex justify-content-end">
-                    </div> -->
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </div>
@@ -78,12 +89,31 @@
 
 @section('script')
 <script type="text/javascript">
+    $(document).on("click", "#reload", function () {
+        $.ajax({
+            type: 'GET',
+            url: "{{ route('reloadCaptcha')}}",
+            success: function (response) {
+                $(".captcha span").html(response.captcha);
+            }
+        });
+    });
+
+    $(document).on("click", ".card-time", function () {
+        var checkbox = $(this).find('input[type="checkbox"]');
+        if (checkbox.is(":checked")) {
+            checkbox.closest(".card-time").addClass("active");
+        } else {
+            checkbox.closest(".card-time").removeClass("active");
+        }
+    });
+
     $(document).ready(() => {
         $("#tanggal").change(() => {
             let selectedField = $('#field_id').val();
             let selectedDate = $('#tanggal').val();
             $.ajax({
-                url: "{{ route('timeRequest')}}",
+                url: "{{ route('timeRequest') }}",
                 type: "POST",
                 data: {
                     "_token": "{{ csrf_token() }}",
@@ -93,13 +123,17 @@
                 success: function(response) {
                     console.log(response.data);
                     if (response.data) {
-                        //tambahkan kelas disable pada input type checkbox
+                        $('input[type="checkbox"]').prop('checked', false);
+                        $('.card-time').removeClass('active');
+                        
                         $('input[type="checkbox"]').each(function() {
                             let $element = $(this).val();
                             if ($.inArray($element, response.data) != -1) {
                                 $(this).prop('disabled', false);
+                                $(this).closest(".card-time").closest(".card-time").removeClass("disabled");
                             } else {
                                 $(this).prop('disabled', true);
+                                $(this).closest(".card-time").closest(".card-time").addClass("disabled");
                             }
                         });
                     } else {
