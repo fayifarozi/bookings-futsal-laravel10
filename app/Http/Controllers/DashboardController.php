@@ -1,13 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+
 use App\Models\Booking;
 use App\Models\DetailBooking;
 use App\Models\Payment;
-
 class DashboardController extends Controller
 {
     public function getInfoBooking(){

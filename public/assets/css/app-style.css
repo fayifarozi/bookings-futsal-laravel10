@@ -93,3 +93,54 @@
 .colored-toast .swal2-html-container {
     color: white;
 }
+
+/*=================================
+                LOGIN             
+  ================================= */
+#auth {
+    height: 100vh;
+    background-image: linear-gradient(
+        to right top,
+        #051937,
+        #004e75,
+        #008891,
+        #00c180,
+        #c1f058
+    );
+    overflow-x: hidden;
+}
+
+#auth #auth-center {
+    padding: 5rem 8rem;
+    position: relative;
+    background: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    box-shadow: 10px 15px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+#auth #auth-center .auth-title {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+#auth #auth-center .auth-logo {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+#auth #auth-center .auth-logo img {
+    height: 5rem;
+}
+@media screen and (max-width: 767px) {
+    #auth #auth-center {
+        padding: 5rem;
+    }
+}
+@media screen and (max-width: 576px) {
+    #auth #auth-center {
+        padding: 5rem 3rem;
+    }
+}
