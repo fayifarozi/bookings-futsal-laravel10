@@ -63,7 +63,7 @@ Route::middleware(['admin'])->group(function () {
         Route::get('/futsal-field/{path}/edit', [FieldController::class, 'editField'])->name('fields.edit');
         Route::post('/futsal-field/update', [FieldController::class, 'updateField'])->name('fields.update');
         Route::post('/futsal-field/update-status', [FieldController::class, 'updateStatus'])->name('fields.updateStatus');
-        Route::delete('/futsal-field/{id}/delete', [FieldController::class, 'destroyField'])->name('fields.delete');
+        // Route::delete('/futsal-field/{id}/delete', [FieldController::class, 'destroyField'])->name('fields.delete');
     
         Route::get('/schedules', [ScheduleController::class, 'getAllSchedule'])->name('schedules');
         Route::post('/schedules/open-hour', [ScheduleController::class, 'addScheduleOpen'])->name('schedules.setOpenTime');

@@ -11,15 +11,16 @@ class AuthController extends Controller
         return view('login');
     }
     public function login(Request $request){
-
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
-        $credentials = User::where('email','=',$request->email)->first();
-        if(auth()->attempt(array('email' => $request->email, 'password'=> $request->password))){
-            if(auth()->user()->level=='admin'){
-                // dd(auth()->user()->level=='admin');
+        $credentials = $request->only('email', 'password');
+        // $credentials = User::where('email','=',$request->email)->first();
+        // if(auth()->attempt(array('email' => $request->email, 'password'=> $request->password))){
+        if (auth()->attempt($credentials)) {
+            $user = auth()->user();
+            if($user->level == 'admin' || $user->level == 'employee' ){
                 session()->put('level', auth()->user()->level);
                 session()->put('name', auth()->user()->name);
                 session()->put('id', auth()->user()->user_id);
@@ -36,7 +37,6 @@ class AuthController extends Controller
                     'message' => 'E-mail atau Kata Sandi Anda Salah'
                 ];
                 Session::flash('toast', $toastMessage);
-                // return redirect(route('fields'));
                 return back();
             }
         }else{
@@ -49,7 +49,6 @@ class AuthController extends Controller
         }
     }
     public function logout(Request $request){
-        // dd('nnansdoanosd'); 
         Session::flush();
         return redirect()->route('login');
     }
