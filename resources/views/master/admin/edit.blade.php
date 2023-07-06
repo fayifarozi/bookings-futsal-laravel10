@@ -40,8 +40,19 @@
                                 <input type="text" class="form-control mb-2" id="email" name="email" value="{{ $admin->email }}" required>
                             </div>
                             <div class="col-12 mb-3">
-                                <label for="Password">Password</label>
-                                <input type="password" class="form-control" id="password" name="password" value="{{ $admin->password }}" required>
+                                <label for="level">Level Access</label>
+                                @if(Session::get('level') == 'admin')
+                                    <select class="form-select" id="level" name="level" aria-label="Default select example" value="{{ $admin->level }}">
+                                        <option value="admin" {{ $admin->level == 'admin' ? 'selected' : '' }}>Admin</option>
+                                        <option value="employee" {{ $admin->level == 'employee' ? 'selected' : '' }}>Employee</option>
+                                    </select>
+                                @else
+                                    <input type="text" class="form-control mb-2 disable" id="level" name="level" disabled value="{{ $admin->level }}" >
+                                @endif
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label for="password">New Password</label>
+                                <input type="password" class="form-control" id="password" name="password" value="" placeholder="Masukan Password baru jika ingin Merubah" required>
                             </div>
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-primary rounded-pill" type="button">Update</button>

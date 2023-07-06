@@ -17,7 +17,6 @@ class Admin
     public function handle(Request $request, Closure $next): Response
     {
         if(Session::has('level')){
-        // if(auth()->user()->level == 'admin'){
             return $next($request);
         }else{
             return redirect('login')->with('error',"You haven't Access.");

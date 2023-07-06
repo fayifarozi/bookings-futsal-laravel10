@@ -16,9 +16,6 @@
                 <div class="row" id="basic-table">
                     <div class="col">
                         <div class="card">
-                            <div class="card-header">
-                                <button class="btn btn-primary rounded-pill">Tambahkan</button>
-                            </div>
                             <div class="card-content">
                                 <div class="card-body">
                                     <div class="table-responsive">

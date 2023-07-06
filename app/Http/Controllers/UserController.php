@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -18,7 +19,6 @@ class UserController extends Controller
 
     public function create()
     {
-        //
         return view('master.admin.create');
     }
 
@@ -29,6 +29,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required',
         ]);
+        
         $validatedData['level'] = 'admin';
 
         if ($request->file('image')) {
@@ -50,7 +51,6 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        // dd($user);   
         return view('master.admin.edit', [
             'admin' => $user
         ]);
@@ -61,12 +61,17 @@ class UserController extends Controller
         // dd($request->all());
         $rules = [
             'name' => 'required|max:255',
-            'password' => 'required|min:5|max:255',
+            
         ];
 
         if ($request->email != $user->email) {
-            $rules['email'] = 'required|email|unique:admin';
+            $rules['email'] = 'required|email|unique:users,email';
         }
+
+        if ($request->password != null){
+            $rules['password'] = 'required|max:255';
+        }
+
         $validatedData = $request->validate($rules);
 
         if ($request->level) {
@@ -76,7 +81,6 @@ class UserController extends Controller
         if ($request->hasFile('image')) {
             if($request->image_old){
                 $imagePath = public_path('images/profiles/' . $request->image_old);
-                // dd($imagePath);
                 if (file_exists($imagePath)) {
                     unlink($imagePath);
                 }
@@ -84,6 +88,10 @@ class UserController extends Controller
             $imageNewName = time().'.'.$request->image->extension();
             $request->image->move(public_path('images/profiles'), $imageNewName);
             $validatedData['image'] = $imageNewName;
+        }
+        
+        if ($request->password) {
+            $validatedData['password'] = Hash::make($request->password);
         }
 
         User::where('id', $user->id)->update($validatedData);
