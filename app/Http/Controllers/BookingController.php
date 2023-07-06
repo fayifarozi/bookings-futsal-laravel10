@@ -197,4 +197,6 @@ class BookingController extends Controller
 			$detailBooking->save();
 		}
 	}
+
 }
+
