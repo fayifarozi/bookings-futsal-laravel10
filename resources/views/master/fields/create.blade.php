@@ -42,22 +42,36 @@
                                 </div>
                                 <div class="col-12 mb-3">
                                     <label for="field_name">Lapangan</label>
-                                    <input type="text" class="form-control mb-2" id="field_name" name="field_name" value="{{ old('field_name') }}"  required>
+                                    <input type="text" class="form-control mb-2" id="field_name" name="field_name" value="{{ old('field_name') }}" placeholder="Nama Lapangan" required>
+                                    @error('field_name')
                                     <div class="valid-feedback">
                                         <i class="bx bx-radio-circle"></i>
-                                        This is valid state.
+                                        {{ $message }}
                                     </div>
+                                    @enderror
                                 </div>
                                 <div class="col-12 mb-3">
                                     <label for="price">Price</label>
                                     <input type="text" class="form-control" id="price"
-                                        placeholder="Input harga sewa per-jam.." name="price"  value="{{ old('price') }}" required>
-                                    <div class="invalid-feedback">
+                                        placeholder="Harga sewa per-jam.." name="price"  value="{{ old('price') }}" required>
+                                    @error('price')
+                                    <div class="valid-feedback">
                                         <i class="bx bx-radio-circle"></i>
-                                        This is invalid state.
+                                        {{ $message }}
                                     </div>
+                                    @enderror
                                 </div>
-                                <div class="d-grid gap-2">
+                                <div class="col-12 mb-3">
+                                    <label for="description">Deskripsi</label>
+                                    <textarea class="form-control"  name="description" id="description" cols="30" rows="5">{{ old('description') }}</textarea>
+                                    @error('description')
+                                    <div class="valid-feedback">
+                                        <i class="bx bx-radio-circle"></i>
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                                <div class="d-grid gap-2 mt-3">
                                     <button type="submit" class="btn btn-primary rounded-pill" type="button">Tambahkan</button>
                                 </div>
                             </div>

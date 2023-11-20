@@ -14,7 +14,7 @@
                 <div class="row">
                     <div class="col-12 col-md-4 mr-1" align="center">
                         <div class="card avatar photo-card border-0 rounded-circle mb-0" style="width:300px;">
-                            <img src="/assets/img/team/team-1.jpg" class="photo img-fluid" id="imgRead"/>
+                            <img src="{{ asset('/assets/img/team/team-1.jpg')}}" class="photo img-fluid" id="imgRead"/>
                             <div class="photo-overlay">
                                 <i class="bi bi-cloud-arrow-up"></i>
                                 <div class="image-upload">

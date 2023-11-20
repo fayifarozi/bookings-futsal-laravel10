@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('futsal_fields', function (Blueprint $table) {
             $table->id('field_id');
             $table->string('field_name');
+            $table->string('description');
+            $table->string('path');
             $table->decimal('price', 10, 2);
             $table->string('image')->nullable();
             $table->enum('status', ['deactive', 'active'])->default('active');

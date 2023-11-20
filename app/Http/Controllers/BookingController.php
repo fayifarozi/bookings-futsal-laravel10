@@ -31,13 +31,22 @@ class BookingController extends Controller
            'futsalFields' => $futsalFields,
         ]);
     }
+
+    public function bookingFieldEX(){
+        $futsalFields = FutsalField::getFieldActive();
+        $times = Hour::getOpenTime();
+
+        return view('formBooking/form',[
+           'futsalFields' => $futsalFields,
+           'times' => $times,
+
+        ]);
+    }
     
     public function bookingTime($path)
     {
-        // dd($path);
         $futsalFields = FutsalField::where('path', $path)->firstOrFail();
         $field_id = $futsalFields->field_id;
-        // dd($field_id);
         $times = Hour::getOpenTime();
         return view('formBooking/timeForm', [
             'times' => $times,

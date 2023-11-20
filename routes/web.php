@@ -36,6 +36,7 @@ Route::post('/logout',[AuthController::class, 'logout'])->name('logout');
 Route::prefix('/booking')->group(function () {
     Route::get('/captcha', [BookingController::class, 'reloadCaptcha'])->name('reloadCaptcha');
     Route::get('/', [BookingController::class, 'bookingField'])->name('BookingField');
+    Route::get('/coba/1', [BookingController::class, 'bookingFieldEX'])->name('BookingFieldCOBA');
     Route::get('/{path}', [BookingController::class, 'bookingTime'])->name('BookingTime');
     Route::post('/request', [BookingController::class, 'timeRequest'])->name('timeRequest');
     Route::post('/save', [BookingController::class, 'store'])->name('StoreBooking');

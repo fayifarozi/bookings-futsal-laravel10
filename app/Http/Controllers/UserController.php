@@ -30,7 +30,7 @@ class UserController extends Controller
             'password' => 'required',
         ]);
         
-        $validatedData['level'] = 'admin';
+        $validatedData['level'] = 'employee';
 
         if ($request->file('image')) {
             $imageName = time().'.'.$request->image->extension();
@@ -58,10 +58,8 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        // dd($request->all());
         $rules = [
             'name' => 'required|max:255',
-            
         ];
 
         if ($request->email != $user->email) {
@@ -94,7 +92,7 @@ class UserController extends Controller
             $validatedData['password'] = Hash::make($request->password);
         }
 
-        User::where('id', $user->id)->update($validatedData);
+        User::where('user_id', $user->id)->update($validatedData);
 
         return redirect('/master/admin')->with('success', 'Update admin success!');
     }
