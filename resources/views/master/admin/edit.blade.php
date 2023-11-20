@@ -9,17 +9,17 @@
 <div class="page-content">
     <section class="section">
         <div class="card p-3">
-            <form class="edit-profile" method="post" action="{{ route('admin.update', ['user' => $admin->id]) }}" enctype="multipart/form-data">
+            <form class="edit-profile" method="post" action="{{ route('admin.update', ['user' => $admin->user_id]) }}" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <input type="hidden" name="image_old" value="{{ $admin->image }}">
                 <div class="row">
                     <div class="col-12 col-md-4" align="center">
                         <div class="card avatar photo-card border-0 rounded-circle mb-0" style="width:300px;">
-                            @if($admin->image)
+                            @if($admin->image != null)
                                 <img src="{{ asset('images/profiles/' . $admin->image) }}" class="photo img-fluid" id="imgRead" />
                                 @else
-                                <img src="/assets/img/avatar-1.png" class="photo img-fluid" id="imgRead"/>
+                                <img src="{{ asset('/assets/img/team/team-1.jpg') }}" class="photo img-fluid" id="imgRead"/>
                             @endif
                             <div class="photo-overlay">
                                 <i class="bi bi-cloud-arrow-up"></i>

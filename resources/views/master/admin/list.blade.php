@@ -41,8 +41,8 @@
                         <td>{{ $row->name }}</td>
                         <td>{{ $row->email }}</td>
                         <td class="d-flex" >
-                            <a href="{{ route('admin.edit', ['user' => $row->id]) }}" class="btn btn-warning mx-1"><span class="material-symbols-outlined"> edit </span></a>
-                            <form method="post" action="{{ route('admin.delete',['user' => $row->id]) }}">
+                            <a href="{{ route('admin.edit', ['user' => $row->user_id]) }}" class="btn btn-warning mx-1"><span class="material-symbols-outlined"> edit </span></a>
+                            <form method="post" action="{{ route('admin.delete',['user' => $row->user_id]) }}">
                                 @method('delete')
                                 @csrf
                                 <button class="btn btn-danger mx-1" onclick="return confirm('Are you sure?');"><span class="material-symbols-outlined"> delete </span></button>

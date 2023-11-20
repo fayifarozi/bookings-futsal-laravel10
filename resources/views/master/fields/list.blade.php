@@ -43,6 +43,11 @@
                                                         @endif
                                                     </div>
                                                 </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <p>{{ $row->description }}</p>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="card-footer d-flex justify-content-center gap-1" >
                                                 <a href="{{ route('fields.edit', ['path' => $row->path]) }}" class="btn btn-primary">Edit</a>

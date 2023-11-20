@@ -11,6 +11,7 @@ class FutsalField extends Model
     protected $primaryKey = 'field_id';
     protected $fillable = [
         'field_name',
+        'description',
         'price',
         'path',
         'image',

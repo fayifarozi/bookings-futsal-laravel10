@@ -6,27 +6,33 @@
 
 <div id="main" class="container" data-aos="fade-up">
     <section id="order-list">
-        <form action="{{ route('StoreBooking')}}" method="post">
-            @csrf
-            <input type="hidden" id="field_id" name="field_id" value="{{ $futsalFields->field_id }}">
-            <input type="hidden" id="fieldPrice" name="fieldPrice" value="{{ $futsalFields->price }}">
-            <div class="row p-3">
-                <div class="col-lg-6">
-                    <div class="card border-0">
-                        <div class="card-content">
-                            @if ($futsalFields->image !== null)
-                                <img src="{{ asset('images/' . $futsalFields->image) }}" class="card-img" alt="...">
-                            @else
-                                <img src="/assets/img/cta-bg.jpg" class="card-img" alt="...">
-                            @endif
-                            <div class="card-body">
-                                <h1>{{ $futsalFields->field_name }}</h1>
-                                <p>{{ $futsalFields->description }}</p>
-                            </div>
-                        </div>
+        
+        <div class="row row-cols-auto mt-3">
+            <div class="col-12">
+                <h1>PILIH LAPANGAN</h1>
+            </div>
+            @foreach( $futsalFields as $field)
+            <div class="col p-3">
+                <div class="card shadow text-center" style="width: 18rem;">
+                    @if ($field->image !== null)
+                        <img src="{{ asset('images/' . $field->image) }}" class="card-img-top" alt="...">
+                    @else
+                        <img src="/assets/img/cta-bg.jpg" class="card-img-top" alt="...">
+                    @endif
+                    <div class="card-body">
+                        <h5 class="card-title" id="field">{{ $field->field_name }}</h5>
+                        <p class="card-text" id="price"><sup>Rp</sup> {{ $field->price }}</p>
+                        <!-- <a href="{{ route('BookingTime',['path' => $field->path ])}}" class="btn btn-primary">Booking</a> -->
                     </div>
                 </div>
-                <div class="col-lg-6">
+            </div>
+            @endforeach
+        </div>
+        <div class="row">
+        <form action="{{ route('StoreBooking')}}" method="post">
+            @csrf
+            <div class="row p-3">
+                <div class="col-lg-12">
                     <div class="row p-3">
                         <div class="col-6">
                             <label for="name" class="form-label">Nama</label>
@@ -72,20 +78,20 @@
                             @enderror
                         </div>
                         
-                        <div class="col-6 mb-3">
+                        <!-- <div class="col-6 mb-3">
                             <div class="captcha">
                                 <span>{!! captcha_img() !!}</span>
                                 <button type="button" class="btn btn-danger" class="reload" id="reload">
                                     &#x21bb;
                                 </button>
                             </div>
-                        </div>
-                        
+                        </div> -->
+<!--                         
                         <div class="col-6 mb-3">
                             <div class="form-group mb-4">
                                 <input id="captcha" type="text" class="form-control" placeholder="Enter Captcha" name="captcha">
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class=" col-12 mb-3">
                             <div class="row row-col-auto">
@@ -108,68 +114,7 @@
                 </div>
             </div>
         </form>
+        </div>
     </section>
 </div>
-@endsection
-
-@section('script')
-<script type="text/javascript">
-    $(document).on("click", "#reload", function () {
-        $.ajax({
-            type: 'GET',
-            url: "{{ route('reloadCaptcha')}}",
-            success: function (response) {
-                $(".captcha span").html(response.captcha);
-            }
-        });
-    });
-
-    $(document).on("click", ".card-time", function () {
-        var checkbox = $(this).find('input[type="checkbox"]');
-        if (checkbox.is(":checked")) {
-            checkbox.closest(".card-time").addClass("active");
-        } else {
-            checkbox.closest(".card-time").removeClass("active");
-        }
-    });
-
-    $(document).ready(() => {
-        $("#tanggal").change(() => {
-            let selectedField = $('#field_id').val();
-            let selectedDate = $('#tanggal').val();
-            $.ajax({
-                url: "{{ route('timeRequest') }}",
-                type: "POST",
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    lapangan: selectedField,
-                    tanggal: selectedDate
-                },
-                success: function(response) {
-                    console.log(response.data);
-                    if (response.data) {
-                        $('input[type="checkbox"]').prop('checked', false);
-                        $('.card-time').removeClass('active');
-                        
-                        $('input[type="checkbox"]').each(function() {
-                            let $element = $(this).val();
-                            if ($.inArray($element, response.data) != -1) {
-                                $(this).prop('disabled', false);
-                                $(this).closest(".card-time").closest(".card-time").removeClass("disabled");
-                            } else {
-                                $(this).prop('disabled', true);
-                                $(this).closest(".card-time").closest(".card-time").addClass("disabled");
-                            }
-                        });
-                    } else {
-                        console.log("data doesn't exists");
-                    };
-                },
-                error: function(response) {
-                    console.log(response);
-                }
-            });
-        })
-    })
-</script>
 @endsection

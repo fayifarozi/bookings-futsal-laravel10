@@ -54,14 +54,15 @@ class FieldController extends Controller
         $validatedData = $request->validate([
             'field_name' => 'required',
             'price' => 'required',
-            'image' => 'required|image|mimes:jpg,png,jpeg,svg|max:2048',
+            'description' => 'required',
+            'image' => 'required|image|mimes:jpg,png,jpeg,svg|max:8000',
         ]);
         
         $string = $request->field_name;
         $path = preg_replace('/[^a-zA-Z0-9]+/', '-', $string);
         $validatedData['path'] = strtolower($path);
         
-        $imageName = time().'.'.$request->image->extension();
+        $imageName = strtolower($path).'_'.time().'.'.$request->image->extension();
         $request->image->move(public_path('images'), $imageName);
         $validatedData['image'] = $imageName;
 
@@ -85,6 +86,7 @@ class FieldController extends Controller
     public function updateField(Request $request){
         $validatedData = $request->validate([
             'field_name' => 'required',
+            'description'=> 'required',
             'price' => 'required'
         ]);
 
@@ -110,9 +112,10 @@ class FieldController extends Controller
         
         if($verif){
             $data = FutsalField::getFieldById($request->field_id);
-            if ($data->price != $request->price || $data->image != $validatedData['image']){
+            if ($data->price != $request->price || $data->image != $validatedData['image'] || $data->description != $validatedData['description']){
                 $data->update([
-                    'price' => $request->price,
+                    'price' => $validatedData['price'],
+                    'description'=> $validatedData['description'],
                     'image' => $validatedData['image']
                 ]);
         
@@ -123,7 +126,6 @@ class FieldController extends Controller
             
                 Session::flash('toast', $toastMessage);
                 return redirect(route('fields'));
-
             } elseif ($data->field_name == $validatedData['field_name']){
                 $toastMessage = [
                     'type' => 'warning',
@@ -149,6 +151,7 @@ class FieldController extends Controller
 
         $data->update([
             'field_name' => $validatedData['field_name'],
+            'description'=> $validatedData['description'],
             'price' => $validatedData['price'],
             'image' => $validatedData['image'],
             'path' => $validatedData['path']
