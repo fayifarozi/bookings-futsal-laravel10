@@ -24,6 +24,7 @@
                         <th>Image</th>
                         <th>Name</th>
                         <th>Email</th>
+                        <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -40,6 +41,7 @@
                         </td>
                         <td>{{ $row->name }}</td>
                         <td>{{ $row->email }}</td>
+                        <td>{{ $row->level }}</td>
                         <td class="d-flex" >
                             <a href="{{ route('admin.edit', ['user' => $row->user_id]) }}" class="btn btn-warning mx-1"><span class="material-symbols-outlined"> edit </span></a>
                             <form method="post" action="{{ route('admin.delete',['user' => $row->user_id]) }}">

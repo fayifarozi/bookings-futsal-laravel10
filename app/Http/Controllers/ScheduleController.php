@@ -42,15 +42,13 @@ class ScheduleController extends Controller
                 'message' => 'New Time has been added'
             ];
         
-            Session::flash('toast', $toastMessage);
-            return redirect(route('schedules'));
+            return redirect(route('schedules'))->with('toast', $toastMessage);
         } catch (\Throwable $th) {
             $toastMessage = [
                 'type' => 'error',
                 'message' => 'Error occurred while adding time',
             ];
-            Session::flash('toast', $toastMessage);
-            return redirect(route('schedules'));
+            return redirect(route('schedules'))->with('toast', $toastMessage);
         }
     }
 

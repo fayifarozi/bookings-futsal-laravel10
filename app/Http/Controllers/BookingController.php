@@ -108,7 +108,6 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
         $bookingData = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required',
@@ -153,7 +152,6 @@ class BookingController extends Controller
             'amount' => $amount
         ];
 
-        // dd($booking, $detailParm);
         $detailBooking = DetailBooking::create($detailParm);
 
         self::_generatePaymentToken($booking, $detailBooking);
