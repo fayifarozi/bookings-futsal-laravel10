@@ -52,7 +52,7 @@ Route::middleware(['admin'])->group(function () {
         Route::get('/admin/create', [UserController::class, 'create'])->name('admin.create');
         Route::post('/admin/save', [UserController::class, 'store'])->name('admin.save');
         Route::get('/admin/{user}/edit', [UserController::class, 'edit'])->name('admin.edit');
-        Route::put('/admin/{user}/update', [UserController::class, 'update'])->name('admin.update');
+        Route::match(['patch', 'put'],'/admin/{user}/update', [UserController::class, 'update'])->name('admin.update');
         Route::delete('/admin/{user}/delete', [UserController::class, 'destroy'])->name('admin.delete');
         
         Route::get('/bookings', [BookingController::class, 'getAllBooking'])->name('bookings');

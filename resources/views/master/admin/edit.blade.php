@@ -11,7 +11,7 @@
         <div class="card p-3">
             <form class="edit-profile" method="post" action="{{ route('admin.update', ['user' => $admin->user_id]) }}" enctype="multipart/form-data">
                 @csrf
-                @method('PUT')
+                @method('patch')
                 <input type="hidden" name="image_old" value="{{ $admin->image }}">
                 <div class="row">
                     <div class="col-12 col-md-4" align="center">
@@ -52,7 +52,7 @@
                             </div>
                             <div class="col-12 mb-3">
                                 <label for="password">New Password</label>
-                                <input type="password" class="form-control" id="password" name="password" value="" placeholder="Masukan Password baru jika ingin Merubah" required>
+                                <input type="password" class="form-control" id="password" name="password" value="" placeholder="Masukan Password baru jika ingin Merubah">
                             </div>
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-primary rounded-pill" type="button">Update</button>

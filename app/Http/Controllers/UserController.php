@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -39,9 +40,20 @@ class UserController extends Controller
         } else {
             $validatedData['image'] = null;
         }
-        User::create($validatedData);
+        $res = User::create($validatedData);
+        if(!$res){
+            $toastMessage = [
+                'type' => 'error',
+                'message' => 'Admin failed updated!'
+            ];
+        } else {
+            $toastMessage = [
+                'type' => 'success',
+                'message' => 'Admin has been updated!'
+            ];
+        }
 
-        return redirect('/master/admin')->with('success', 'New admin has been added!');
+        return redirect('/master/admin')->with('toast', $toastMessage);
     }
 
     public function show(User $user)
@@ -65,16 +77,12 @@ class UserController extends Controller
         if ($request->email != $user->email) {
             $rules['email'] = 'required|email|unique:users,email';
         }
-
         if ($request->password != null){
             $rules['password'] = 'required|max:255';
         }
-
         $validatedData = $request->validate($rules);
 
-        if ($request->level) {
-            $validatedData['level'] = $request->level;
-        }
+        $validatedData['level'] = $request->level;
 
         if ($request->hasFile('image')) {
             if($request->image_old){
@@ -92,15 +100,40 @@ class UserController extends Controller
             $validatedData['password'] = Hash::make($request->password);
         }
 
-        User::where('user_id', $user->id)->update($validatedData);
-
-        return redirect('/master/admin')->with('success', 'Update admin success!');
+        $res = User::where('user_id', $user->user_id)->update($validatedData);
+        if(!$res){
+            $toastMessage = [
+                'type' => 'error',
+                'message' => 'Admin failed updated!'
+            ];
+        } else {
+            $toastMessage = [
+                'type' => 'success',
+                'message' => 'Admin has been updated!'
+            ];
+        }
+        
+        return redirect('/master/admin')->with('toast', $toastMessage);
     }
 
     public function destroy(User $user)
     {
         // Storage::delete($user->image);
-        User::destroy($user->id);
-        return redirect('/master/admin')->with('success', 'User has been deleted!');
+        $user_email = $user->email;
+        $res = User::destroy($user->user_id);
+        
+        if(!$res){
+            $toastMessage = [
+                'type' => 'error',
+                'message' => 'Admin failed deleted!'
+            ];
+        } else {
+            $toastMessage = [
+                'type' => 'success',
+                'message' => 'Admin has been'. $user_email.'!'
+            ];
+        }
+    
+        return redirect('/master/admin')->with('toast', $toastMessage);
     }
 }
